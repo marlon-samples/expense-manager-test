@@ -12,6 +12,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $dates = ['created_at', 'updated_at'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -40,5 +42,17 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'date:M d, Y',
+        'updated_at' => 'date:M d, Y',
     ];
+
+    public function user_role()
+    {
+        return $this->hasOne(UserRole::class,'user_id')->with('role');
+    }
+
+    public function getUser($id)
+    {
+        return User::where('id', $id)->with('user_role')->get();
+    }
 }
